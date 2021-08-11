@@ -32,10 +32,9 @@ public class Venda {
 
     @Override
     public String toString() {
-        Double total = itensVenda.stream().mapToDouble(itemVenda -> { return  itemVenda.getProduto().getPreco() * itemVenda.getQuantidade();}).sum();
         return "\nVenda{" +
                 "\nusuario=" + usuario +
                 "\n, itemVendas=" + itensVenda +
-                "\n, Total=" + total;
+                "\n";
     }
 }

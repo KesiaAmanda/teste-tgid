@@ -5,6 +5,7 @@ import model.Venda;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Principal {
     private static List<Venda> vendas = new ArrayList<>();
@@ -36,13 +37,32 @@ public class Principal {
         compra(usuario, itensVenda);
 
 
-        System.out.println("Resumo das Vendas\n" + vendas.toString());
+        System.out.println("Resumo das Vendas");
+        gerarRelatorio();
     }
 
     private static void compra(Usuario usuario, List<ItemVenda> itensVenda){
         vendas.add(new Venda(usuario, itensVenda));
     }
 
+    private static void gerarRelatorio(){
+        vendas.stream().forEach(venda -> {
+            System.out.println("Venda:");
+            System.out.println("Usuario: " +
+                    "\nNome: "+venda.getUsuario().getNome()+
+                    "\nCPF: "+venda.getUsuario().getCpf()+
+                    "\nE-Mail: "+venda.getUsuario().getEmail()+
+                    "\nProdutos:");
+            venda.getItemVendas().stream().forEach(itemVenda ->
+                            System.out.println("nome: " + itemVenda.getProduto().getNome() +
+                                    " preco: " + itemVenda.getProduto().getPreco() +
+                                    " quantidade :" + itemVenda.getQuantidade() +
+                                    " total: " + itemVenda.getProduto().getPreco()*itemVenda.getQuantidade() ));
+
+            System.out.println("Total da compra:" + venda.getItemVendas().stream().mapToDouble(itemVenda ->
+                            { return  itemVenda.getProduto().getPreco() * itemVenda.getQuantidade();}).sum() + "\n");
+        });
+    }
     private static List<Usuario> carregaUsuarios(){
         List<Usuario> usuarios = new ArrayList<>();
         usuarios.add(new Usuario(55555555555l,"Maria","maria@email.com"));
