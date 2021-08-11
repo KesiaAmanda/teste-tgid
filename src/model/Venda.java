@@ -1,8 +1,6 @@
 package model;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 public class Venda {
     private Usuario usuario;
@@ -34,9 +32,10 @@ public class Venda {
 
     @Override
     public String toString() {
-        return "Venda{" +
-                "\n\n usuario=" + usuario +
+        Double total = itensVenda.stream().mapToDouble(itemVenda -> { return  itemVenda.getProduto().getPreco() * itemVenda.getQuantidade();}).sum();
+        return "\nVenda{" +
+                "\nusuario=" + usuario +
                 "\n, itemVendas=" + itensVenda +
-                "\n";
+                "\n, Total=" + total;
     }
 }
