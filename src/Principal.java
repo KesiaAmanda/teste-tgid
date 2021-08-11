@@ -5,36 +5,35 @@ import model.Venda;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Principal {
     private static List<Venda> vendas = new ArrayList<>();
+    private static List<Produto> produtos = new ArrayList<>();
 
     public static void main(String[] args) {
         List<Usuario> usuarios = carregaUsuarios();
-        List<Produto> produtos = carregaProdutos();
-
+        produtos = carregaProdutos();
 
         Usuario usuario = usuarios.get(1);
         List<ItemVenda> itensVenda = new ArrayList<>();
-        itensVenda.add(new ItemVenda(produtos.get(0), 5));
-        itensVenda.add(new ItemVenda(produtos.get(1), 2));
-        itensVenda.add(new ItemVenda(produtos.get(2), 3));
+        addItem(itensVenda,new ItemVenda(produtos.get(0), 5));
+        addItem(itensVenda,new ItemVenda(produtos.get(1), 5));
+        addItem(itensVenda,new ItemVenda(produtos.get(2), 3));
         compra(usuario, itensVenda);
 
-        usuario = usuarios.get(0);
-        itensVenda.clear();
-        itensVenda.add(new ItemVenda(produtos.get(3), 2));
-        itensVenda.add(new ItemVenda(produtos.get(2), 3));
-        compra(usuario, itensVenda);
-
-        usuario = usuarios.get(2);
-        itensVenda.clear();
-        itensVenda.add(new ItemVenda(produtos.get(0), 5));
-        itensVenda.add(new ItemVenda(produtos.get(1), 2));
-        itensVenda.add(new ItemVenda(produtos.get(2), 3));
-        itensVenda.add(new ItemVenda(produtos.get(4), 5));
-        compra(usuario, itensVenda);
+//        usuario = usuarios.get(0);
+//        itensVenda.clear();
+//        itensVenda.add(new ItemVenda(produtos.get(3), 2));
+//        itensVenda.add(new ItemVenda(produtos.get(2), 3));
+//        compra(usuario, itensVenda);
+//
+//        usuario = usuarios.get(2);
+//        itensVenda.clear();
+//        itensVenda.add(new ItemVenda(produtos.get(0), 5));
+//        itensVenda.add(new ItemVenda(produtos.get(1), 2));
+//        itensVenda.add(new ItemVenda(produtos.get(2), 3));
+//        itensVenda.add(new ItemVenda(produtos.get(4), 5));
+//        compra(usuario, itensVenda);
 
 
         System.out.println("Resumo das Vendas");
@@ -42,7 +41,23 @@ public class Principal {
     }
 
     private static void compra(Usuario usuario, List<ItemVenda> itensVenda){
-        vendas.add(new Venda(usuario, itensVenda));
+        if(!itensVenda.isEmpty()){
+            vendas.add(new Venda(usuario, itensVenda));
+        }
+    }
+
+    private static List<ItemVenda> addItem(List<ItemVenda> itensVenda, ItemVenda itemVenda){
+        produtos.stream().forEach(produto -> {
+            if(produto.equals(itemVenda.getProduto())){
+                if(produto.getQuantidade()-itemVenda.getQuantidade()>=0){
+                    produto.setQuantidade(produto.getQuantidade()-itemVenda.getQuantidade());
+                    itensVenda.add(itemVenda);
+                }else{
+                    System.out.println("Quantidade inválida");
+                }
+            }
+        });
+        return itensVenda;
     }
 
     private static void gerarRelatorio(){
@@ -57,7 +72,8 @@ public class Principal {
                             System.out.println("nome: " + itemVenda.getProduto().getNome() +
                                     " preco: " + itemVenda.getProduto().getPreco() +
                                     " quantidade :" + itemVenda.getQuantidade() +
-                                    " total: " + itemVenda.getProduto().getPreco()*itemVenda.getQuantidade() ));
+                                    " total: " + itemVenda.getProduto().getPreco()*itemVenda.getQuantidade()
+                            ));
 
             System.out.println("Total da compra:" + venda.getItemVendas().stream().mapToDouble(itemVenda ->
                             { return  itemVenda.getProduto().getPreco() * itemVenda.getQuantidade();}).sum() + "\n");
@@ -73,7 +89,7 @@ public class Principal {
 
     private static List<Produto> carregaProdutos(){
         List<Produto> produtos = new ArrayList<>();
-        produtos.add(new Produto("Ração Golden",132.99,100));
+        produtos.add(new Produto("Ração Golden",132.99,3));
         produtos.add(new Produto("Ração Premier",204.99,200));
         produtos.add(new Produto("Biscoito Golden",15.90,150));
         produtos.add(new Produto("Snack Petz",4.99,150));
